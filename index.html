@@ -3,412 +3,416 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jadwal — Timing Profile</title>
+  <title>Jadwal — Timetable Tracker</title>
+  <meta name="description" content="Jadwal: offline timetable tracker with live period status, home widget, and automatic local notifications for Android.">
+  <meta property="og:title" content="Jadwal — Timetable Tracker">
+  <meta property="og:description" content="Open your timetable profile in Jadwal or download the app.">
+  <meta property="og:url" content="https://dariokisumo.github.io">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..800;1,14..32,300..800&display=swap" rel="stylesheet">
   <style>
+    /* ─── Design Tokens ─────────────────────────────────────────────────── */
     :root {
-      --bg: #121212;
-      --card: #1e1e1e;
-      --card-border: #2e2e2e;
-      --text: #f0f0f0;
-      --text-muted: #9e9e9e;
-      --primary: #d4930d;
-      --primary-hover: #e5a41e;
-      --primary-fg: #121212;
-      --surface-accent: rgba(212, 147, 13, 0.12);
-      --surface-accent-border: rgba(212, 147, 13, 0.28);
+      /* Primitives — OKLCH-derived, sRGB output */
+      --p-amber-55:  #d4930d;
+      --p-amber-62:  #e5a41e;
+      --p-amber-20:  rgba(212,147,13,0.12);
+      --p-amber-28:  rgba(212,147,13,0.24);
+      --p-neutral-14: #161618;
+      --p-neutral-18: #1c1c1f;
+      --p-neutral-22: #222226;
+      --p-neutral-28: #28282e;
+      --p-neutral-32: #333339;
+      --p-neutral-60: #60606a;
+      --p-neutral-78: #78788a;
+      --p-neutral-94: #e8e8f0;
+
+      /* Semantic aliases */
+      --bg:            var(--p-neutral-14);
+      --card:          var(--p-neutral-18);
+      --card-border:   var(--p-neutral-28);
+      --text:          var(--p-neutral-94);
+      --text-muted:    var(--p-neutral-78);
+      --text-subtle:   var(--p-neutral-60);
+      --primary:       var(--p-amber-55);
+      --primary-hover: var(--p-amber-62);
+      --primary-fg:    #111110;
+      --surface-accent:        var(--p-amber-20);
+      --surface-accent-border: var(--p-amber-28);
+
+      /* Spacing tokens (4-pt base) */
+      --sp-xs:  4px; --sp-sm:  8px; --sp-md:  16px;
+      --sp-lg:  24px; --sp-xl:  40px; --sp-xxl: 64px;
+
+      /* Radius tokens */
+      --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-full: 9999px;
+
+      /* Shadows */
+      --shadow-card: 0 4px 8px rgba(0,0,0,.20), 0 16px 40px rgba(0,0,0,.38), 0 0 0 1px rgba(255,255,255,.04) inset;
+      --shadow-slot: 0 2px 6px rgba(0,0,0,.18);
+      --shadow-btn:  0 2px 8px rgba(212,147,13,.22);
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 800px 600px at 50% -80px, rgba(212,147,13,.07) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 80% 110%, rgba(100,80,200,.04) 0%, transparent 60%);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: var(--sp-lg) var(--sp-md);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-optical-sizing: auto;
+      -webkit-font-smoothing: antialiased;
     }
-    .container {
-      width: 100%;
-      max-width: 460px;
-    }
+
+    .container { width: 100%; max-width: 440px; }
+
     .card {
       background-color: var(--card);
+      background-image: linear-gradient(160deg, rgba(255,255,255,.025) 0%, transparent 55%);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 28px 24px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      border-radius: var(--r-lg);
+      padding: var(--sp-xl) var(--sp-lg);
+      box-shadow: var(--shadow-card);
+      animation: fadeUp .38s cubic-bezier(.22,.68,0,1.1) both;
     }
+
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: var(--sp-xs);
       background: var(--surface-accent);
       border: 1px solid var(--surface-accent-border);
       color: var(--primary);
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .6px; text-transform: uppercase;
       padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      border-radius: var(--r-full);
+      margin-bottom: var(--sp-md);
     }
+    .badge svg { width: 12px; height: 12px; flex-shrink: 0; }
+
     h1 {
-      font-size: 24px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
+      font-size: 22px; font-weight: 750;
+      font-variation-settings: 'opsz' 28;
+      color: #fff; line-height: 1.25;
+      margin-bottom: var(--sp-xs);
+      letter-spacing: -.3px;
     }
+
     p.subtitle {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 24px;
+      color: var(--text-muted); font-size: 14px;
+      line-height: 1.55; margin-bottom: var(--sp-lg);
     }
+
     .slots-container {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 24px;
-      max-height: 320px;
-      overflow-y: auto;
-      padding-right: 4px;
+      display: flex; flex-direction: column;
+      gap: var(--sp-sm); margin-bottom: var(--sp-lg);
+      max-height: 300px; overflow-y: auto;
+      padding-right: var(--sp-xs);
+      scrollbar-width: thin;
+      scrollbar-color: var(--p-neutral-32) transparent;
     }
-    .slots-container::-webkit-scrollbar {
-      width: 6px;
-    }
-    .slots-container::-webkit-scrollbar-thumb {
-      background: #333;
-      border-radius: 4px;
-    }
+    .slots-container::-webkit-scrollbar { width: 5px; }
+    .slots-container::-webkit-scrollbar-thumb { background: var(--p-neutral-32); border-radius: var(--r-sm); }
+
     .slot-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #171717;
-      border: 1px solid #282828;
-      border-radius: 12px;
-      padding: 12px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--p-neutral-22);
+      border: 1px solid var(--p-neutral-32);
+      border-radius: var(--r-md);
+      padding: 11px 14px;
+      box-shadow: var(--shadow-slot);
+      animation: slideIn .3s cubic-bezier(.22,.68,0,1.1) both;
     }
-    .slot-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-    }
+    .slot-row:nth-child(1) { animation-delay:.04s } .slot-row:nth-child(2) { animation-delay:.08s }
+    .slot-row:nth-child(3) { animation-delay:.12s } .slot-row:nth-child(4) { animation-delay:.16s }
+    .slot-row:nth-child(5) { animation-delay:.20s } .slot-row:nth-child(6) { animation-delay:.24s }
+    .slot-row:nth-child(7) { animation-delay:.28s } .slot-row:nth-child(8) { animation-delay:.32s }
+
+    .slot-title { font-size: 13px; font-weight: 600; color: var(--text); }
     .slot-time {
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 12px; font-weight: 600;
+      font-variant-numeric: tabular-nums;
       color: var(--primary);
       background: var(--surface-accent);
-      padding: 4px 10px;
-      border-radius: 8px;
+      border: 1px solid var(--surface-accent-border);
+      padding: 3px 10px; border-radius: var(--r-sm);
     }
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+
+    .btn-group { display: flex; flex-direction: column; gap: var(--sp-sm); }
+
     .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: all 0.15s ease;
-      text-align: center;
+      display: flex; align-items: center; justify-content: center;
+      gap: var(--sp-sm);
+      padding: 13px var(--sp-md);
+      border-radius: var(--r-md);
+      font-size: 14px; font-weight: 650;
+      font-family: inherit; text-decoration: none;
+      cursor: pointer; border: none;
+      transition: background .14s ease, box-shadow .14s ease, transform .1s ease;
+      text-align: center; -webkit-tap-highlight-color: transparent;
     }
-    .btn-primary {
-      background: var(--primary);
-      color: var(--primary-fg);
-    }
-    .btn-primary:hover {
-      background: var(--primary-hover);
-    }
-    .btn-secondary {
-      background: #252525;
-      color: #fff;
-      border: 1px solid #363636;
-    }
-    .btn-secondary:hover {
-      background: #303030;
-    }
-    .btn-text {
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 13px;
-      padding: 8px;
-    }
-    .btn-text:hover {
-      color: #fff;
-    }
+    .btn:active { transform: scale(0.985); }
+    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .btn-primary { background: var(--primary); color: var(--primary-fg); box-shadow: var(--shadow-btn); }
+    .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 4px 16px rgba(212,147,13,.35); }
+
+    .btn-secondary { background: #252528; color: var(--text); border: 1px solid var(--p-neutral-32); }
+    .btn-secondary:hover { background: #2e2e33; border-color: #404048; }
+
+    .btn-ghost { background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; padding: var(--sp-sm); }
+    .btn-ghost:hover { color: var(--text); }
+
     .tip-box {
-      margin-top: 18px;
-      padding: 12px;
-      background: #181818;
-      border: 1px solid #282828;
-      border-radius: 10px;
-      font-size: 12px;
-      color: #888;
-      line-height: 1.5;
+      margin-top: var(--sp-md); padding: var(--sp-md);
+      background: #181820; border: 1px solid var(--p-neutral-32);
+      border-radius: var(--r-md);
+      font-size: 12px; color: var(--text-subtle); line-height: 1.6;
+      display: flex; gap: 10px; align-items: flex-start;
     }
-    .tip-box strong {
-      color: #bbb;
+    .tip-box svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; color: var(--text-subtle); }
+    .tip-box strong { color: var(--text-muted); }
+    .tip-box code {
+      font-family: 'SF Mono','Fira Code',monospace;
+      background: rgba(255,255,255,.06);
+      padding: 1px 5px; border-radius: 4px; font-size: 11px;
     }
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      background: #222;
-      border: 1px solid #444;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 13px;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.25s ease;
-      pointer-events: none;
-      z-index: 100;
+
+    .features {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--sp-sm); margin-bottom: var(--sp-lg);
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
+    .feature-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: #1e1e23; border: 1px solid var(--p-neutral-32);
+      border-radius: var(--r-md); padding: 9px 12px;
+      font-size: 12px; font-weight: 500; color: var(--text-muted);
     }
+    .feature-pill svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--primary); }
+
     .footer {
-      text-align: center;
-      margin-top: 18px;
-      font-size: 12px;
-      color: #555;
+      text-align: center; margin-top: var(--sp-md);
+      font-size: 11px; font-weight: 500;
+      letter-spacing: .3px; color: var(--text-subtle);
+    }
+
+    .toast {
+      position: fixed; bottom: var(--sp-lg); left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: #2a2a30; border: 1px solid #3e3e48;
+      color: var(--text); padding: 10px 18px;
+      border-radius: var(--r-full);
+      font-size: 13px; font-weight: 500;
+      opacity: 0;
+      transition: opacity .22s ease, transform .22s cubic-bezier(.22,.68,0,1.1);
+      pointer-events: none; z-index: 100; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--p-neutral-32);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin-bottom: var(--sp-md);
+    }
+
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:none } }
+    @keyframes slideIn { from { opacity:0; transform:translateY(6px)  } to { opacity:1; transform:none } }
+    @keyframes spin    { to { transform:rotate(360deg) } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card, .slot-row { animation: none !important; }
+      .btn, .toast     { transition: none !important; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="card" id="mainCard">
+
       <div id="loadingState">
-        <div class="badge">Jadwal Profile</div>
-        <h1>Opening Jadwal...</h1>
-        <p class="subtitle">Looking for timing profile...</p>
+        <div class="spinner"></div>
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Jadwal Profile
+        </div>
+        <h1>Opening Jadwal…</h1>
+        <p class="subtitle">Looking for your timing profile.</p>
       </div>
 
-      <div id="profileState" style="display: none;">
-        <div class="badge">📅 Timing Profile</div>
+      <div id="profileState" style="display:none;">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Timing Profile
+        </div>
         <h1 id="profileName">Schedule</h1>
         <p class="subtitle" id="profileCount">0 periods loaded</p>
-
         <div class="slots-container" id="slotsList"></div>
-
         <div class="btn-group">
-          <!-- Direct custom scheme anchor tag -->
-          <a class="btn btn-primary" id="openDirectBtn" href="#">Open in Jadwal App</a>
-          <!-- Intent URI button for Chrome on Android -->
-          <a class="btn btn-secondary" id="openIntentBtn" href="#" style="font-size: 14px;">Launch via Android Intent</a>
-          <button class="btn btn-secondary" id="copyCodeBtn" type="button">Copy Import Code</button>
-          
-          <a class="btn btn-text" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
-            Don't have Jadwal? Download APK
+          <a class="btn btn-primary" id="openDirectBtn" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Open in Jadwal App
+          </a>
+          <a class="btn btn-secondary" id="openIntentBtn" href="#" style="font-size:13px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+            Launch via Android Intent
+          </a>
+          <button class="btn btn-secondary" id="copyCodeBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Import Code
+          </button>
+          <a class="btn btn-ghost" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
+            Don’t have Jadwal? Download APK
           </a>
         </div>
-
         <div class="tip-box">
-          💡 <strong>Tip for automatic one-tap open:</strong> In Android <strong>Settings > Apps > Jadwal > Open by default > Add links</strong>, enable <code>dariokisumo.github.io</code> so shared links open Jadwal directly!
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>
+            <strong>One-tap open tip:</strong> In Android
+            <strong>Settings → Apps → Jadwal → Open by default → Add links</strong>,
+            enable <code>dariokisumo.github.io</code> so shared links open Jadwal directly.
+          </span>
         </div>
       </div>
 
-      <div id="homeState" style="display: none;">
-        <div class="badge">⚡ Jadwal</div>
-        <h1>Jadwal Timetable</h1>
-        <p class="subtitle">Offline timetable tracker with live period status, home widget, and automatic local notifications.</p>
-
+      <div id="homeState" style="display:none;">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Jadwal
+        </div>
+        <h1>Your Timetable, Always On Time</h1>
+        <p class="subtitle">Offline timetable tracker with live period status, home widget, and automatic local notifications for Android.</p>
+        <div class="features">
+          <div class="feature-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+            Live Period Status
+          </div>
+          <div class="feature-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Home Widget
+          </div>
+          <div class="feature-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Auto Notifications
+          </div>
+          <div class="feature-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            100% Offline
+          </div>
+        </div>
         <div class="btn-group">
           <a class="btn btn-primary" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download Latest APK
           </a>
           <a class="btn btn-secondary" href="https://github.com/Dariokisumo/Jadwal" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
             View on GitHub
           </a>
         </div>
       </div>
+
     </div>
-    <div class="footer">Jadwal • Offline Timetable Tracker</div>
+    <div class="footer">Jadwal &nbsp;·&nbsp; Offline Timetable Tracker</div>
   </div>
 
-  <div class="toast" id="toast">Copied to clipboard!</div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    function base64UrlToUint8Array(base64Url) {
-      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      while (base64.length % 4 !== 0) base64 += '=';
-      const binary = atob(base64);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
+    function base64UrlToUint8Array(b) {
+      let s = b.replace(/-/g,'+').replace(/_/g,'/');
+      while (s.length%4) s+='=';
+      const bin=atob(s), bytes=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
       return bytes;
     }
-
-    function formatMinutes(totalMin) {
-      let h = Math.floor(totalMin / 60) % 24;
-      const m = totalMin % 60;
-      const period = h >= 12 ? 'PM' : 'AM';
-      let hour12 = h % 12;
-      if (hour12 === 0) hour12 = 12;
-      const mStr = m.toString().padStart(2, '0');
-      return `${hour12}:${mStr} ${period}`;
+    function formatMinutes(m) {
+      const h=Math.floor(m/60)%24,min=m%60;
+      return `${h%12||12}:${String(min).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
     }
-
     function parsePayload(raw) {
       let bytes;
-      try {
-        bytes = base64UrlToUint8Array(raw);
-      } catch (e) {
-        return null;
-      }
-
-      // Check compact binary minute-format: 'J', 'P', 0x01
-      if (bytes.length >= 5 && bytes[0] === 0x4A && bytes[1] === 0x50 && bytes[2] === 0x01) {
-        let offset = 3;
-        const nameLen = bytes[offset++];
-        const nameBytes = bytes.slice(offset, offset + nameLen);
-        const name = new TextDecoder().decode(nameBytes);
-        offset += nameLen;
-        const slotCount = bytes[offset++];
-        const slots = [];
-        for (let i = 0; i < slotCount; i++) {
-          const pNum = bytes[offset++];
-          const startMin = (bytes[offset++] << 8) | bytes[offset++];
-          const endMin = (bytes[offset++] << 8) | bytes[offset++];
-          slots.push({
-            period: pNum,
-            start: formatMinutes(startMin),
-            end: formatMinutes(endMin)
-          });
+      try { bytes=base64UrlToUint8Array(raw); } catch { return null; }
+      if(bytes.length>=5&&bytes[0]===0x4A&&bytes[1]===0x50&&bytes[2]===0x01) {
+        let o=3;
+        const nLen=bytes[o++],name=new TextDecoder().decode(bytes.slice(o,o+nLen));
+        o+=nLen;
+        const cnt=bytes[o++],slots=[];
+        for(let i=0;i<cnt;i++) {
+          const p=bytes[o++],s=(bytes[o++]<<8)|bytes[o++],e=(bytes[o++]<<8)|bytes[o++];
+          slots.push({period:p,start:formatMinutes(s),end:formatMinutes(e)});
         }
-        return { name: name || 'Schedule', slots };
+        return {name:name||'Schedule',slots};
       }
-
-      // Fallback: UTF-8 JSON
       try {
-        const text = new TextDecoder().decode(bytes);
-        const json = JSON.parse(text);
-        const slots = [];
-        if (json.slots) {
-          for (const [p, t] of Object.entries(json.slots)) {
-            slots.push({ period: parseInt(p), start: t[0], end: t[1] });
-          }
-        }
-        return { name: json.name || 'Schedule', slots };
-      } catch (e) {
-        return null;
-      }
+        const j=JSON.parse(new TextDecoder().decode(bytes));
+        return {name:j.name||'Schedule',
+          slots:j.slots?Object.entries(j.slots).map(([p,t])=>({period:+p,start:t[0],end:t[1]})):[]};
+      } catch { return null; }
     }
-
     function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+      const t=document.getElementById('toast');
+      t.textContent=msg; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),2200);
     }
-
     function getRawPayload() {
-      // 1. Check URL hash: #SlAB... or #p/SlAB... or #p#SlAB...
-      if (window.location.hash) {
-        let h = window.location.hash.substring(1);
-        if (h.startsWith('p/')) h = h.substring(2);
-        if (h.startsWith('/p/')) h = h.substring(3);
-        if (h.startsWith('p#')) h = h.substring(2);
-        if (h.startsWith('#')) h = h.substring(1);
-        if (h) return h;
+      if(window.location.hash) {
+        let h=window.location.hash.substring(1);
+        for(const p of['p/','p#','#']) if(h.startsWith(p)) h=h.substring(p.length);
+        if(h.startsWith('/p/')) h=h.substring(3);
+        if(h) return h;
       }
-      // 2. Check query params: ?data=...
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('data')) {
-        return urlParams.get('data');
-      }
-      // 3. Check path segments: /p/<payload>
-      const pathParts = window.location.pathname.split('/').filter(Boolean);
-      if (pathParts.length >= 2 && pathParts[0] === 'p') {
-        return pathParts[1];
-      }
+      const p=new URLSearchParams(window.location.search);
+      if(p.has('data')) return p.get('data');
+      const parts=window.location.pathname.split('/').filter(Boolean);
+      if(parts.length>=2&&parts[0]==='p') return parts[1];
       return null;
     }
-
+    function show(id) { document.getElementById(id).style.display='block'; }
+    function hide(id) { document.getElementById(id).style.display='none'; }
     function init() {
-      const payload = getRawPayload();
-
-      if (!payload) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('homeState').style.display = 'block';
-        return;
-      }
-
-      const profile = parsePayload(payload);
-      if (!profile || !profile.slots || profile.slots.length === 0) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('homeState').style.display = 'block';
-        return;
-      }
-
-      // Render profile
-      document.getElementById('profileName').textContent = profile.name;
-      document.getElementById('profileCount').textContent = `${profile.slots.length} periods loaded`;
-
-      const list = document.getElementById('slotsList');
-      list.innerHTML = '';
-      profile.slots.sort((a, b) => a.period - b.period);
-      for (const slot of profile.slots) {
-        const row = document.createElement('div');
-        row.className = 'slot-row';
-        row.innerHTML = `
-          <span class="slot-title">Period ${slot.period}</span>
-          <span class="slot-time">${slot.start} – ${slot.end}</span>
-        `;
+      const raw=getRawPayload();
+      if(!raw) { hide('loadingState'); show('homeState'); return; }
+      const p=parsePayload(raw);
+      if(!p||!p.slots?.length) { hide('loadingState'); show('homeState'); return; }
+      document.getElementById('profileName').textContent=p.name;
+      document.getElementById('profileCount').textContent=
+        `${p.slots.length} period${p.slots.length!==1?'s':''} loaded`;
+      const list=document.getElementById('slotsList');
+      list.innerHTML='';
+      p.slots.sort((a,b)=>a.period-b.period).forEach(s=>{
+        const row=document.createElement('div');
+        row.className='slot-row';
+        row.innerHTML=`<span class="slot-title">Period ${s.period}</span><span class="slot-time">${s.start}–${s.end}</span>`;
         list.appendChild(row);
-      }
-
-      document.getElementById('loadingState').style.display = 'none';
-      document.getElementById('profileState').style.display = 'block';
-
-      // Setup URL schemes
-      const encodedPayload = encodeURIComponent(payload);
-      const customSchemeUrl = `jadwal://profile?data=${encodedPayload}`;
-      const fallbackUrl = encodeURIComponent('https://github.com/Dariokisumo/Jadwal/releases/latest');
-      const intentUrl = `intent://profile/?data=${encodedPayload}#Intent;scheme=jadwal;package=com.example.jadwal;S.browser_fallback_url=${fallbackUrl};end`;
-
-      // 1. Direct App Link button
-      const openDirectBtn = document.getElementById('openDirectBtn');
-      openDirectBtn.href = customSchemeUrl;
-      openDirectBtn.addEventListener('click', () => {
-        window.location.href = customSchemeUrl;
       });
-
-      // 2. Intent Launch button
-      const openIntentBtn = document.getElementById('openIntentBtn');
-      openIntentBtn.href = intentUrl;
-
-      // 3. Copy Code button
-      document.getElementById('copyCodeBtn').addEventListener('click', () => {
-        navigator.clipboard.writeText(`JADWAL_PROFILE:${payload}`).then(() => {
-          showToast('Import code copied!');
-        }).catch(() => {
-          showToast('Failed to copy');
-        });
+      hide('loadingState'); show('profileState');
+      const enc=encodeURIComponent(raw);
+      const cu=`jadwal://profile?data=${enc}`;
+      const fb=encodeURIComponent('https://github.com/Dariokisumo/Jadwal/releases/latest');
+      const iu=`intent://profile/?data=${enc}#Intent;scheme=jadwal;package=com.example.jadwal;S.browser_fallback_url=${fb};end`;
+      const db=document.getElementById('openDirectBtn');
+      db.href=cu;
+      db.addEventListener('click',()=>{ window.location.href=cu; });
+      document.getElementById('openIntentBtn').href=iu;
+      document.getElementById('copyCodeBtn').addEventListener('click',()=>{
+        navigator.clipboard.writeText(`JADWAL_PROFILE:${raw}`)
+          .then(()=>showToast('Import code copied!'))
+          .catch(()=>showToast('Failed to copy'));
       });
     }
-
     init();
   </script>
 </body>
