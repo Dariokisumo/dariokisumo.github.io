@@ -155,6 +155,19 @@
     .btn-text:hover {
       color: #fff;
     }
+    .tip-box {
+      margin-top: 18px;
+      padding: 12px;
+      background: #181818;
+      border: 1px solid #282828;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #888;
+      line-height: 1.5;
+    }
+    .tip-box strong {
+      color: #bbb;
+    }
     .toast {
       position: fixed;
       bottom: 24px;
@@ -199,19 +212,19 @@
         <div class="slots-container" id="slotsList"></div>
 
         <div class="btn-group">
-          <!-- Real anchor tag with Android intent:// and jadwal:// scheme -->
-          <a class="btn btn-primary" id="openAppBtn" href="#">Open in Jadwal App</a>
+          <!-- Direct custom scheme anchor tag -->
+          <a class="btn btn-primary" id="openDirectBtn" href="#">Open in Jadwal App</a>
+          <!-- Intent URI button for Chrome on Android -->
+          <a class="btn btn-secondary" id="openIntentBtn" href="#" style="font-size: 14px;">Launch via Android Intent</a>
           <button class="btn btn-secondary" id="copyCodeBtn" type="button">Copy Import Code</button>
           
-          <div style="text-align: center; margin-top: 4px;">
-            <a id="altSchemeLink" href="#" style="font-size: 12px; color: #777; text-decoration: underline;">
-              App not opening? Tap here
-            </a>
-          </div>
-
           <a class="btn btn-text" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
             Don't have Jadwal? Download APK
           </a>
+        </div>
+
+        <div class="tip-box">
+          💡 <strong>Tip for automatic one-tap open:</strong> In Android <strong>Settings > Apps > Jadwal > Open by default > Add links</strong>, enable <code>dariokisumo.github.io</code> so shared links open Jadwal directly!
         </div>
       </div>
 
@@ -369,32 +382,24 @@
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('profileState').style.display = 'block';
 
-      // Setup intent & custom scheme URLs
+      // Setup URL schemes
       const encodedPayload = encodeURIComponent(payload);
-      // Official Android Chrome intent syntax with explicit ACTION_VIEW and BROWSABLE category:
-      const intentUrl = `intent://profile?data=${encodedPayload}#Intent;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;scheme=jadwal;package=com.example.jadwal;end`;
       const customSchemeUrl = `jadwal://profile?data=${encodedPayload}`;
+      const fallbackUrl = encodeURIComponent('https://github.com/Dariokisumo/Jadwal/releases/latest');
+      const intentUrl = `intent://profile/?data=${encodedPayload}#Intent;scheme=jadwal;package=com.example.jadwal;S.browser_fallback_url=${fallbackUrl};end`;
 
-      const openBtn = document.getElementById('openAppBtn');
-      const altLink = document.getElementById('altSchemeLink');
-      const isAndroid = /Android/i.test(navigator.userAgent);
-
-      // On Android, use intent:// for Chrome/Chromium; on other OS use custom scheme
-      openBtn.href = isAndroid ? intentUrl : customSchemeUrl;
-      altLink.href = customSchemeUrl;
-
-      openBtn.addEventListener('click', (e) => {
-        // Fallback after delay in case intent is blocked
-        setTimeout(() => {
-          window.location.href = customSchemeUrl;
-        }, 1000);
-      });
-
-      altLink.addEventListener('click', () => {
-        // Direct custom scheme navigation
+      // 1. Direct App Link button
+      const openDirectBtn = document.getElementById('openDirectBtn');
+      openDirectBtn.href = customSchemeUrl;
+      openDirectBtn.addEventListener('click', () => {
         window.location.href = customSchemeUrl;
       });
 
+      // 2. Intent Launch button
+      const openIntentBtn = document.getElementById('openIntentBtn');
+      openIntentBtn.href = intentUrl;
+
+      // 3. Copy Code button
       document.getElementById('copyCodeBtn').addEventListener('click', () => {
         navigator.clipboard.writeText(`JADWAL_PROFILE:${payload}`).then(() => {
           showToast('Import code copied!');
@@ -402,21 +407,6 @@
           showToast('Failed to copy');
         });
       });
-
-      // Auto-trigger app launch on mobile via native intent
-      if (isAndroid) {
-        setTimeout(() => {
-          const autoLink = document.createElement('a');
-          autoLink.href = intentUrl;
-          document.body.appendChild(autoLink);
-          autoLink.click();
-          document.body.removeChild(autoLink);
-        }, 300);
-      } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        setTimeout(() => {
-          window.location.href = customSchemeUrl;
-        }, 300);
-      }
     }
 
     init();
