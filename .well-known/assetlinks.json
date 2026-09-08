@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.jadwal",
+      "sha256_cert_fingerprints": [
+        "02:8C:29:3E:94:5E:86:1C:04:25:C0:7F:EB:B9:5C:1D:EF:B0:94:28:66:1A:15:AC:B6:42:A0:EC:F3:71:F9:23"
+      ]
+    }
+  }
+]
