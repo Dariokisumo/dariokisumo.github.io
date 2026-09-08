@@ -371,8 +371,8 @@
 
       // Setup intent & custom scheme URLs
       const encodedPayload = encodeURIComponent(payload);
-      // Official Android Chrome intent syntax:
-      const intentUrl = `intent://profile?data=${encodedPayload}#Intent;scheme=jadwal;package=com.example.jadwal;end`;
+      // Official Android Chrome intent syntax with explicit ACTION_VIEW and BROWSABLE category:
+      const intentUrl = `intent://profile?data=${encodedPayload}#Intent;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;scheme=jadwal;package=com.example.jadwal;end`;
       const customSchemeUrl = `jadwal://profile?data=${encodedPayload}`;
 
       const openBtn = document.getElementById('openAppBtn');
@@ -384,19 +384,14 @@
       altLink.href = customSchemeUrl;
 
       openBtn.addEventListener('click', (e) => {
-        if (!isAndroid) {
-          e.preventDefault();
+        // Fallback after delay in case intent is blocked
+        setTimeout(() => {
           window.location.href = customSchemeUrl;
-        } else {
-          // Fallback after delay in case intent:// is not handled
-          setTimeout(() => {
-            window.location.href = customSchemeUrl;
-          }, 800);
-        }
+        }, 1000);
       });
 
-      altLink.addEventListener('click', (e) => {
-        e.preventDefault();
+      altLink.addEventListener('click', () => {
+        // Direct custom scheme navigation
         window.location.href = customSchemeUrl;
       });
 
