@@ -129,6 +129,7 @@
       cursor: pointer;
       border: none;
       transition: all 0.15s ease;
+      text-align: center;
     }
     .btn-primary {
       background: var(--primary);
@@ -167,6 +168,7 @@
       transform: translateY(10px);
       transition: all 0.25s ease;
       pointer-events: none;
+      z-index: 100;
     }
     .toast.show {
       opacity: 1;
@@ -197,8 +199,16 @@
         <div class="slots-container" id="slotsList"></div>
 
         <div class="btn-group">
-          <button class="btn btn-primary" id="openAppBtn">Open in Jadwal App</button>
-          <button class="btn btn-secondary" id="copyCodeBtn">Copy Import Code</button>
+          <!-- Real anchor tag with Android intent:// and jadwal:// scheme -->
+          <a class="btn btn-primary" id="openAppBtn" href="#">Open in Jadwal App</a>
+          <button class="btn btn-secondary" id="copyCodeBtn" type="button">Copy Import Code</button>
+          
+          <div style="text-align: center; margin-top: 4px;">
+            <a id="altSchemeLink" href="#" style="font-size: 12px; color: #777; text-decoration: underline;">
+              App not opening? Tap here
+            </a>
+          </div>
+
           <a class="btn btn-text" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
             Don't have Jadwal? Download APK
           </a>
@@ -301,12 +311,13 @@
     }
 
     function getRawPayload() {
-      // 1. Check URL hash: #SlAB... or #p/SlAB...
+      // 1. Check URL hash: #SlAB... or #p/SlAB... or #p#SlAB...
       if (window.location.hash) {
         let h = window.location.hash.substring(1);
         if (h.startsWith('p/')) h = h.substring(2);
         if (h.startsWith('/p/')) h = h.substring(3);
         if (h.startsWith('p#')) h = h.substring(2);
+        if (h.startsWith('#')) h = h.substring(1);
         if (h) return h;
       }
       // 2. Check query params: ?data=...
@@ -358,10 +369,35 @@
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('profileState').style.display = 'block';
 
-      // Setup actions
-      const deepLinkUrl = `jadwal://profile?data=${encodeURIComponent(payload)}`;
-      document.getElementById('openAppBtn').addEventListener('click', () => {
-        window.location.href = deepLinkUrl;
+      // Setup intent & custom scheme URLs
+      const encodedPayload = encodeURIComponent(payload);
+      // Official Android Chrome intent syntax:
+      const intentUrl = `intent://profile?data=${encodedPayload}#Intent;scheme=jadwal;package=com.example.jadwal;end`;
+      const customSchemeUrl = `jadwal://profile?data=${encodedPayload}`;
+
+      const openBtn = document.getElementById('openAppBtn');
+      const altLink = document.getElementById('altSchemeLink');
+      const isAndroid = /Android/i.test(navigator.userAgent);
+
+      // On Android, use intent:// for Chrome/Chromium; on other OS use custom scheme
+      openBtn.href = isAndroid ? intentUrl : customSchemeUrl;
+      altLink.href = customSchemeUrl;
+
+      openBtn.addEventListener('click', (e) => {
+        if (!isAndroid) {
+          e.preventDefault();
+          window.location.href = customSchemeUrl;
+        } else {
+          // Fallback after delay in case intent:// is not handled
+          setTimeout(() => {
+            window.location.href = customSchemeUrl;
+          }, 800);
+        }
+      });
+
+      altLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = customSchemeUrl;
       });
 
       document.getElementById('copyCodeBtn').addEventListener('click', () => {
@@ -372,11 +408,18 @@
         });
       });
 
-      // Auto-trigger app launch on mobile
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isMobile) {
+      // Auto-trigger app launch on mobile via native intent
+      if (isAndroid) {
         setTimeout(() => {
-          window.location.href = deepLinkUrl;
+          const autoLink = document.createElement('a');
+          autoLink.href = intentUrl;
+          document.body.appendChild(autoLink);
+          autoLink.click();
+          document.body.removeChild(autoLink);
+        }, 300);
+      } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        setTimeout(() => {
+          window.location.href = customSchemeUrl;
         }, 300);
       }
     }
