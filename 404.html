@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jadwal — Timetable Tracker</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <meta name="description" content="Jadwal: offline timetable tracker with live period status, home widget, and automatic local notifications for Android.">
   <meta property="og:title" content="Jadwal — Timetable Tracker">
   <meta property="og:description" content="Open your timetable profile in Jadwal or download the app.">
@@ -249,55 +252,238 @@
       color: var(--action);
     }
 
-    /* ── CTA buttons ───────────────────────────────────── */
-    .cta-row {
-      display: flex;
-      gap: var(--s-3);
-      margin-top: var(--s-10);
+    /* ══════════════════════════════════════════════════════
+       LIQUID GLASS BUTTON SYSTEM (Apple iOS 26+ HIG / SwiftUI)
+       Fluid optics: dual-edge specular highlights, deep blur,
+       sheen reflection, tactile springs, and dock containers
+       ══════════════════════════════════════════════════════ */
+    .glass-effect-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px;
+      background: rgba(22, 18, 14, 0.62);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--r-2xl);
+      box-shadow:
+        0 20px 48px -8px rgba(0, 0, 0, 0.55),
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.12),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+      margin-top: var(--s-8);
       animation: fadeUp .5s .34s cubic-bezier(.16,.9,.4,1) both;
+      width: fit-content;
+      max-width: 100%;
     }
 
-    .btn {
+    .glass-row-secondary {
+      display: contents;
+    }
+
+    .glass-btn, .btn {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: var(--s-2);
-      padding: 14px 28px;
-      border-radius: var(--r-md);
-      font-size: 14px;
-      font-weight: 650;
+      gap: 8px;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: var(--r-xl);
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       font-family: inherit;
       cursor: pointer;
-      border: none;
-      transition: all .18s ease;
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      transition:
+        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+        background 0.22s ease,
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        color 0.22s ease;
       -webkit-tap-highlight-color: transparent;
+      outline: none;
+      user-select: none;
+      border: none;
     }
 
-    .btn:active { transform: scale(0.97); }
-    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-    .btn-primary {
-      background: var(--action);
-      color: var(--action-fg);
-      box-shadow: 0 2px 16px rgba(212,147,13,0.30), 0 0 0 1px rgba(212,147,13,0.15) inset;
+    /* Optical diagonal top sheen */
+    .glass-btn::before, .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.01) 100%);
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+      pointer-events: none;
     }
 
-    .btn-primary:hover {
-      background: var(--action-hover);
-      box-shadow: 0 4px 24px rgba(212,147,13,0.40), 0 0 0 1px rgba(255,255,255,0.1) inset;
-      transform: translateY(-1px);
+    /* Ambient specular glow on hover */
+    .glass-btn::after, .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.18), transparent 70%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
     }
 
-    .btn-secondary {
-      background: var(--surface-raised);
-      color: var(--text);
-      border: 1px solid var(--border-2);
+    .glass-btn:hover::after, .btn:hover::after {
+      opacity: 1;
     }
 
-    .btn-secondary:hover {
-      background: var(--surface-high);
-      border-color: var(--border-3);
-      transform: translateY(-1px);
+    /* Tactile interaction: interactive() */
+    .glass-btn:hover, .btn:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+    .glass-btn:active, .btn:active {
+      transform: translateY(0) scale(0.97);
+    }
+    .glass-btn:focus-visible, .btn:focus-visible {
+      box-shadow: 0 0 0 3px var(--p-amber);
+    }
+
+    .glass-btn svg, .btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── Glass Prominent (Amber Liquid Glass) ───────────── */
+    .glass-btn.glass-prominent, .btn-primary {
+      background: linear-gradient(135deg, rgba(240, 180, 41, 0.22) 0%, rgba(212, 147, 13, 0.12) 100%);
+      backdrop-filter: blur(20px) saturate(190%);
+      -webkit-backdrop-filter: blur(20px) saturate(190%);
+      border: 1px solid rgba(240, 180, 41, 0.35);
+      color: #FFFDF8;
+      box-shadow:
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 0 0 1px rgba(240, 180, 41, 0.25),
+        inset 0 -1.5px 1px 0 rgba(0, 0, 0, 0.35),
+        0 8px 30px -4px rgba(212, 147, 13, 0.40),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-btn.glass-prominent:hover, .btn-primary:hover {
+      background: linear-gradient(135deg, rgba(240, 180, 41, 0.34) 0%, rgba(212, 147, 13, 0.20) 100%);
+      border-color: rgba(240, 180, 41, 0.65);
+      color: #FFF;
+      box-shadow:
+        inset 0 2px 2px 0 rgba(255, 255, 255, 0.85),
+        inset 0 0 0 1px rgba(240, 180, 41, 0.45),
+        inset 0 -1.5px 1px 0 rgba(0, 0, 0, 0.4),
+        0 14px 40px -2px rgba(212, 147, 13, 0.58),
+        0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .glass-btn.glass-prominent svg, .btn-primary svg {
+      color: #F0B429;
+      filter: drop-shadow(0 1px 4px rgba(212, 147, 13, 0.5));
+    }
+
+    /* ── Glass Regular (Crystalline Liquid Glass) ───────── */
+    .glass-btn.glass-regular, .btn-secondary {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--p-text-1);
+      box-shadow:
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3),
+        0 6px 20px rgba(0, 0, 0, 0.28);
+    }
+
+    .glass-btn.glass-regular:hover, .btn-secondary:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.045) 100%);
+      border-color: rgba(255, 255, 255, 0.28);
+      color: #FFF;
+      box-shadow:
+        inset 0 2px 1.5px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35),
+        0 10px 28px rgba(0, 0, 0, 0.4);
+    }
+
+    .glass-btn.glass-regular svg, .btn-secondary svg {
+      color: var(--p-text-2);
+      transition: color 0.2s ease;
+    }
+
+    .glass-btn.glass-regular:hover svg, .btn-secondary:hover svg {
+      color: #FFF;
+    }
+
+    /* ── Glass Badges (Micro-Chips) ─────────────────────── */
+    .glass-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2.5px 7px;
+      border-radius: var(--r-full);
+      line-height: 1.1;
+      margin-left: 2px;
+      transition: all 0.2s ease;
+    }
+
+    .glass-badge-prominent {
+      background: rgba(212, 147, 13, 0.24);
+      border: 1px solid rgba(240, 180, 41, 0.45);
+      color: #FFF8E7;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .glass-badge-regular {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--p-text-2);
+    }
+
+    .glass-btn.glass-regular:hover .glass-badge-regular {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #FFF;
+    }
+
+    .glass-badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #F0B429;
+      box-shadow: 0 0 6px #F0B429;
+    }
+
+    .glass-ext-arrow {
+      width: 11px !important;
+      height: 11px !important;
+      margin-left: -2px;
+      opacity: 0.55;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .glass-btn.glass-regular:hover .glass-ext-arrow {
+      opacity: 1;
+      transform: translate(1px, -1px);
+    }
+
+    /* ── Backward-compatible button helpers & stack ────── */
+    .cta-row {
+      display: flex;
+      gap: var(--s-3);
+      margin-top: var(--s-8);
+      animation: fadeUp .5s .34s cubic-bezier(.16,.9,.4,1) both;
     }
 
     .btn-ghost {
@@ -306,15 +492,19 @@
       font-size: 13px;
       font-weight: 500;
       padding: var(--s-2) var(--s-4);
+      border: none;
+      height: auto;
     }
-
     .btn-ghost:hover { color: var(--text); }
     .btn-ghost svg { width: 14px; height: 14px; }
 
     .btn-stack {
       display: flex;
       flex-direction: column;
-      gap: var(--s-2);
+      gap: 10px;
+    }
+    .btn-stack .glass-btn, .btn-stack .btn {
+      width: 100%;
     }
 
     /* ══════════════════════════════════════════════════════
@@ -827,6 +1017,34 @@
 
       .features { margin-top: var(--s-8); }
 
+      .glass-effect-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 440px;
+        padding: 8px;
+        gap: 8px;
+        border-radius: var(--r-2xl);
+        margin-top: var(--s-8);
+      }
+
+      .glass-effect-container .glass-btn {
+        width: 100%;
+        height: 48px;
+      }
+
+      .glass-row-secondary {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .glass-row-secondary .glass-btn {
+        flex: 1;
+        padding: 0 12px;
+        font-size: 13px;
+      }
+
       .cta-row {
         flex-direction: column;
         margin-top: var(--s-8);
@@ -924,22 +1142,22 @@
         <div class="slots" id="slotsList"></div>
 
         <div class="btn-stack">
-          <a class="btn btn-primary" id="openDirectBtn" href="#">
+          <a class="glass-btn glass-prominent" id="openDirectBtn" href="#" style="height: 50px; font-size: 14.5px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Open in Jadwal App
+            <span>Open in Jadwal App</span>
           </a>
-          <button class="btn btn-secondary" id="copyCodeBtn" type="button">
+          <button class="glass-btn glass-regular" id="copyCodeBtn" type="button" style="height: 48px; font-size: 14px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy Code &amp; Open Jadwal
+            <span>Copy Code &amp; Open Jadwal</span>
           </button>
           <div style="text-align: center; margin-top: 4px;">
             <a id="altSchemeLink" href="#" style="font-size: 12px; color: var(--text-subtle); text-decoration: underline;">
               Having trouble? Try direct custom link
             </a>
           </div>
-          <a class="btn btn-ghost apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk">
+          <a class="glass-btn glass-regular apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk" style="height: 44px; font-size: 13px; margin-top: 4px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Don't have Jadwal? Direct Download APK
+            <span>Don't have Jadwal? Direct Download APK</span>
           </a>
         </div>
 
@@ -990,18 +1208,52 @@
             </div>
           </div>
 
-          <div class="cta-row">
-            <a class="btn btn-primary apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download APK (64-bit)
+          <div class="glass-effect-container" role="group" aria-label="Download and project links">
+            <!-- 64-bit ARM APK (Prominent Liquid Glass) -->
+            <a class="glass-btn glass-prominent apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk" title="Download Jadwal for 64-bit Android (Recommended)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Download APK</span>
+              <span class="glass-badge glass-badge-prominent">
+                <span class="glass-badge-dot" aria-hidden="true"></span>
+                arm64
+              </span>
             </a>
-            <a class="btn btn-secondary apk-download-32-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm32.apk">
-              32-bit APK
-            </a>
-            <a class="btn btn-ghost" href="https://github.com/Dariokisumo/Jadwal" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              GitHub
-            </a>
+
+            <div class="glass-row-secondary">
+              <!-- 32-bit ARM APK (Regular Liquid Glass) -->
+              <a class="glass-btn glass-regular apk-download-32-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm32.apk" title="Download Jadwal for older 32-bit Android devices">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="4" y="4" width="16" height="16" rx="2"/>
+                  <rect x="9" y="9" width="6" height="6"/>
+                  <line x1="9" y1="1" x2="9" y2="4"/>
+                  <line x1="15" y1="1" x2="15" y2="4"/>
+                  <line x1="9" y1="20" x2="9" y2="23"/>
+                  <line x1="15" y1="20" x2="15" y2="23"/>
+                  <line x1="20" y1="9" x2="23" y2="9"/>
+                  <line x1="20" y1="14" x2="23" y2="14"/>
+                  <line x1="1" y1="9" x2="4" y2="9"/>
+                  <line x1="1" y1="14" x2="4" y2="14"/>
+                </svg>
+                <span>32-bit</span>
+                <span class="glass-badge glass-badge-regular">v7a</span>
+              </a>
+
+              <!-- GitHub (Regular Liquid Glass) -->
+              <a class="glass-btn glass-regular" href="https://github.com/Dariokisumo/Jadwal" target="_blank" rel="noopener" title="View source code on GitHub">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                </svg>
+                <span>GitHub</span>
+                <svg class="glass-ext-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="7" y1="17" x2="17" y2="7"/>
+                  <polyline points="7 7 17 7 17 17"/>
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
 
