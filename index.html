@@ -869,6 +869,24 @@
     @media (min-width: 1200px) {
       .hero { gap: var(--s-24); }
     }
+
+    /* ── In-App Browser Banner ──────────────────────────── */
+    .in-app-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #fcd34d;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .in-app-banner svg { width: 18px; height: 18px; flex-shrink: 0; color: #f59e0b; margin-top: 2px; }
+    .in-app-banner strong { color: #fff; }
   </style>
 </head>
 <body>
@@ -888,6 +906,14 @@
     <!-- ── Profile ─────────────────────────────────────── -->
     <div id="profileState" class="profile-wrap" style="display:none;">
       <div class="card">
+        <div class="in-app-banner" id="inAppNotice" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>
+            <strong>Opening in WhatsApp / Telegram?</strong><br>
+            In-app browsers block opening other apps and APK downloads. Tap <strong>⋮</strong> (top-right) &amp; choose <strong>"Open in Chrome"</strong>!
+          </div>
+        </div>
+
         <div class="chip">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           Timing Profile
@@ -902,17 +928,18 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             Open in Jadwal App
           </a>
-          <a class="btn btn-secondary" id="openIntentBtn" href="#" style="font-size:13px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
-            Launch via Android Intent
-          </a>
           <button class="btn btn-secondary" id="copyCodeBtn" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy Import Code
+            Copy Code &amp; Open Jadwal
           </button>
-          <a class="btn btn-ghost" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Don't have Jadwal? Download APK
+          <div style="text-align: center; margin-top: 4px;">
+            <a id="altSchemeLink" href="#" style="font-size: 12px; color: var(--text-subtle); text-decoration: underline;">
+              Having trouble? Try direct custom link
+            </a>
+          </div>
+          <a class="btn btn-ghost apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Don't have Jadwal? Direct Download APK
           </a>
         </div>
 
@@ -964,11 +991,14 @@
           </div>
 
           <div class="cta-row">
-            <a class="btn btn-primary" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
+            <a class="btn btn-primary apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download APK
+              Download APK (64-bit)
             </a>
-            <a class="btn btn-secondary" href="https://github.com/Dariokisumo/Jadwal" target="_blank" rel="noopener">
+            <a class="btn btn-secondary apk-download-32-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm32.apk">
+              32-bit APK
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/Dariokisumo/Jadwal" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
               GitHub
             </a>
@@ -1148,21 +1178,50 @@
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('profileState').style.display = 'flex';
 
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isInApp = /WhatsApp|Telegram|FBAN|FBAV|Instagram|Line|Twitter|Snapchat/i.test(navigator.userAgent);
+      if (isInApp) {
+        const n = document.getElementById('inAppNotice');
+        if (n) n.style.display = 'flex';
+      }
+
       const enc = encodeURIComponent(payload);
       const customSchemeUrl = `jadwal://profile?data=${enc}`;
-      const fallbackUrl = encodeURIComponent('https://github.com/Dariokisumo/Jadwal/releases/latest');
-      const intentUrl = `intent://profile/?data=${enc}#Intent;scheme=jadwal;package=com.example.jadwal;S.browser_fallback_url=${fallbackUrl};end`;
+      const fallbackUrl = encodeURIComponent('https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk');
+      const intentUrl = `intent://profile?data=${enc}#Intent;scheme=jadwal;package=com.example.jadwal;component=com.example.jadwal/.MainActivity;S.data=${enc};S.browser_fallback_url=${fallbackUrl};end`;
 
       const openDirectBtn = document.getElementById('openDirectBtn');
-      openDirectBtn.href = customSchemeUrl;
-      openDirectBtn.addEventListener('click', () => { window.location.href = customSchemeUrl; });
+      if (openDirectBtn) {
+        openDirectBtn.href = isAndroid ? intentUrl : customSchemeUrl;
+      }
 
-      document.getElementById('openIntentBtn').href = intentUrl;
+      const altLink = document.getElementById('altSchemeLink');
+      if (altLink) altLink.href = customSchemeUrl;
 
-      document.getElementById('copyCodeBtn').addEventListener('click', () => {
-        navigator.clipboard.writeText(`JADWAL_PROFILE:${payload}`)
-          .then(() => showToast('Import code copied!'))
-          .catch(() => showToast('Failed to copy'));
+      const copyBtn = document.getElementById('copyCodeBtn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(`JADWAL_PROFILE:${payload}`)
+            .then(() => {
+              showToast('Code copied! Opening Jadwal...');
+              setTimeout(() => {
+                window.location.href = isAndroid ? intentUrl : customSchemeUrl;
+              }, 400);
+            })
+            .catch(() => showToast('Failed to copy code'));
+        });
+      }
+
+      // Handle APK download clicks in in-app browsers
+      document.querySelectorAll('.apk-download-btn, .apk-download-32-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          if (isInApp) {
+            e.preventDefault();
+            showToast('Opening in Chrome to download APK...');
+            const target = btn.getAttribute('href').replace(/^https?:\/\//, '');
+            window.location.href = `intent://${target}#Intent;scheme=https;package=com.android.chrome;end`;
+          }
+        });
       });
     }
 
