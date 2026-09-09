@@ -14,6 +14,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..800;1,14..32,300..800&family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&display=swap" rel="stylesheet">
+  <script src="/liquid-glass.js"></script>
+  <script>
+    if (typeof liquidGlass === 'undefined') {
+      document.write('<script src="./liquid-glass.js"><\/script>');
+    }
+  </script>
   <style>
     /* ═══════════════════════════════════════════════════════════════════
        JADWAL LANDING — Relational Design v2
@@ -253,25 +259,25 @@
     }
 
     /* ══════════════════════════════════════════════════════
-       LIQUID GLASS BUTTON SYSTEM (Apple iOS 26+ HIG / SwiftUI)
-       Fluid optics: dual-edge specular highlights, deep blur,
-       sheen reflection, tactile springs, and dock containers
+       LIQUID GLASS BUTTON SYSTEM (deepika-builds/liquid-glass)
+       Real optical refraction displacement, chromatic prism fringe,
+       specular highlights & fallback frosted blur
        ══════════════════════════════════════════════════════ */
     .glass-effect-container {
+      position: relative;
       display: inline-flex;
       align-items: center;
       gap: 10px;
       padding: 6px;
-      background: rgba(22, 18, 14, 0.62);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--r-2xl);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(22, 18, 14, 0.35), rgba(22, 18, 14, 0.62));
       box-shadow:
-        0 20px 48px -8px rgba(0, 0, 0, 0.55),
-        0 4px 16px rgba(0, 0, 0, 0.3),
-        inset 0 1px 1px rgba(255, 255, 255, 0.12),
-        inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+        0 24px 60px rgba(0, 0, 0, 0.50),
+        inset 0 1px 1px rgba(255, 255, 255, 0.45),
+        inset 0 -8px 20px rgba(255, 255, 255, 0.04),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.11);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
       margin-top: var(--s-8);
       animation: fadeUp .5s .34s cubic-bezier(.16,.9,.4,1) both;
       width: fit-content;
@@ -290,7 +296,7 @@
       gap: 8px;
       height: 48px;
       padding: 0 20px;
-      border-radius: var(--r-xl);
+      border-radius: 20px;
       font-size: 13.5px;
       font-weight: 600;
       letter-spacing: -0.01em;
@@ -299,10 +305,11 @@
       text-decoration: none;
       white-space: nowrap;
       overflow: hidden;
+      backdrop-filter: blur(16px) saturate(170%);
+      -webkit-backdrop-filter: blur(16px) saturate(170%);
       transition:
         transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
         background 0.22s ease,
-        border-color 0.22s ease,
         box-shadow 0.22s ease,
         color 0.22s ease;
       -webkit-tap-highlight-color: transparent;
@@ -311,27 +318,13 @@
       border: none;
     }
 
-    /* Optical diagonal top sheen */
-    .glass-btn::before, .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 50%;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.01) 100%);
-      border-top-left-radius: inherit;
-      border-top-right-radius: inherit;
-      pointer-events: none;
-    }
-
     /* Ambient specular glow on hover */
     .glass-btn::after, .btn::after {
       content: '';
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.18), transparent 70%);
+      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.16), transparent 70%);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
@@ -341,7 +334,7 @@
       opacity: 1;
     }
 
-    /* Tactile interaction: interactive() */
+    /* Tactile interaction */
     .glass-btn:hover, .btn:hover {
       transform: translateY(-2px) scale(1.02);
     }
@@ -358,31 +351,27 @@
       flex-shrink: 0;
     }
 
-    /* ── Glass Prominent (Amber Liquid Glass) ───────────── */
+    /* ── Glass Prominent (Amber Tint Recipe) ────────────── */
     .glass-btn.glass-prominent, .btn-primary {
-      background: linear-gradient(135deg, rgba(240, 180, 41, 0.22) 0%, rgba(212, 147, 13, 0.12) 100%);
-      backdrop-filter: blur(20px) saturate(190%);
-      -webkit-backdrop-filter: blur(20px) saturate(190%);
-      border: 1px solid rgba(240, 180, 41, 0.35);
+      background: linear-gradient(180deg, rgba(240, 180, 41, 0.24) 0%, rgba(212, 147, 13, 0.14) 100%);
       color: #FFFDF8;
       box-shadow:
-        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.65),
-        inset 0 0 0 1px rgba(240, 180, 41, 0.25),
-        inset 0 -1.5px 1px 0 rgba(0, 0, 0, 0.35),
-        0 8px 30px -4px rgba(212, 147, 13, 0.40),
-        0 2px 8px rgba(0, 0, 0, 0.3);
+        0 16px 40px rgba(0, 0, 0, 0.40),
+        0 0 32px -4px rgba(212, 147, 13, 0.38),
+        inset 0 1px 1px rgba(255, 255, 255, 0.65),
+        inset 0 -8px 20px rgba(212, 147, 13, 0.12),
+        inset 0 0 0 1px rgba(240, 180, 41, 0.38);
     }
 
     .glass-btn.glass-prominent:hover, .btn-primary:hover {
-      background: linear-gradient(135deg, rgba(240, 180, 41, 0.34) 0%, rgba(212, 147, 13, 0.20) 100%);
-      border-color: rgba(240, 180, 41, 0.65);
+      background: linear-gradient(180deg, rgba(240, 180, 41, 0.34) 0%, rgba(212, 147, 13, 0.22) 100%);
       color: #FFF;
       box-shadow:
-        inset 0 2px 2px 0 rgba(255, 255, 255, 0.85),
-        inset 0 0 0 1px rgba(240, 180, 41, 0.45),
-        inset 0 -1.5px 1px 0 rgba(0, 0, 0, 0.4),
-        0 14px 40px -2px rgba(212, 147, 13, 0.58),
-        0 4px 14px rgba(0, 0, 0, 0.4);
+        0 20px 48px rgba(0, 0, 0, 0.45),
+        0 0 44px -2px rgba(212, 147, 13, 0.58),
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.85),
+        inset 0 -8px 20px rgba(212, 147, 13, 0.22),
+        inset 0 0 0 1px rgba(240, 180, 41, 0.65);
     }
 
     .glass-btn.glass-prominent svg, .btn-primary svg {
@@ -390,27 +379,25 @@
       filter: drop-shadow(0 1px 4px rgba(212, 147, 13, 0.5));
     }
 
-    /* ── Glass Regular (Crystalline Liquid Glass) ───────── */
+    /* ── Glass Regular (Crystalline Recipe) ─────────────── */
     .glass-btn.glass-regular, .btn-secondary {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.025) 100%);
       color: var(--p-text-1);
       box-shadow:
-        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.35),
-        inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3),
-        0 6px 20px rgba(0, 0, 0, 0.28);
+        0 12px 30px rgba(0, 0, 0, 0.35),
+        inset 0 1px 1px rgba(255, 255, 255, 0.45),
+        inset 0 -8px 18px rgba(255, 255, 255, 0.04),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.14);
     }
 
     .glass-btn.glass-regular:hover, .btn-secondary:hover {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.045) 100%);
-      border-color: rgba(255, 255, 255, 0.28);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.045) 100%);
       color: #FFF;
       box-shadow:
-        inset 0 2px 1.5px 0 rgba(255, 255, 255, 0.55),
-        inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35),
-        0 10px 28px rgba(0, 0, 0, 0.4);
+        0 16px 36px rgba(0, 0, 0, 0.40),
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.65),
+        inset 0 -8px 18px rgba(255, 255, 255, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.28);
     }
 
     .glass-btn.glass-regular svg, .btn-secondary svg {
@@ -1396,12 +1383,48 @@
       return null;
     }
 
+    function initLiquidGlass() {
+      if (typeof liquidGlass !== 'function') return;
+      const setup = () => {
+        const dock = document.querySelector('.glass-effect-container');
+        if (dock && !dock.__lgInit && dock.offsetWidth > 0) {
+          dock.__lgInit = true;
+          liquidGlass(dock, {
+            scale: -70,
+            chroma: 4,
+            border: 0.06,
+            mapBlur: 10,
+            blur: 3,
+            saturate: 1.6,
+            fallbackBlur: 20
+          });
+        }
+        document.querySelectorAll('.glass-btn').forEach(btn => {
+          if (!btn.__lgInit && btn.offsetWidth > 0) {
+            btn.__lgInit = true;
+            liquidGlass(btn, {
+              scale: -40,
+              chroma: 3,
+              border: 0.10,
+              mapBlur: 6,
+              blur: 2,
+              saturate: 1.5,
+              fallbackBlur: 16
+            });
+          }
+        });
+      };
+      requestAnimationFrame(setup);
+      setTimeout(setup, 80);
+    }
+
     function init() {
       const payload = getRawPayload();
 
       if (!payload) {
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('homeState').style.display = 'block';
+        initLiquidGlass();
         return;
       }
 
@@ -1409,6 +1432,7 @@
       if (!profile || !profile.slots?.length) {
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('homeState').style.display = 'block';
+        initLiquidGlass();
         return;
       }
 
@@ -1429,6 +1453,7 @@
 
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('profileState').style.display = 'flex';
+      initLiquidGlass();
 
       const isAndroid = /Android/i.test(navigator.userAgent);
       const isInApp = /WhatsApp|Telegram|FBAN|FBAV|Instagram|Line|Twitter|Snapchat/i.test(navigator.userAgent);
