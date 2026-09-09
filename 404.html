@@ -3,412 +3,630 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jadwal — Timing Profile</title>
+  <title>Jadwal — Timetable Tracker</title>
+  <meta name="description" content="Jadwal: offline timetable tracker with live period status, home widget, and automatic local notifications for Android.">
+  <meta property="og:title" content="Jadwal — Timetable Tracker">
+  <meta property="og:description" content="Open your timetable profile in Jadwal or download the app.">
+  <meta property="og:url" content="https://dariokisumo.github.io">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..800;1,14..32,300..800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #121212;
-      --card: #1e1e1e;
-      --card-border: #2e2e2e;
-      --text: #f0f0f0;
-      --text-muted: #9e9e9e;
-      --primary: #d4930d;
-      --primary-hover: #e5a41e;
-      --primary-fg: #121212;
-      --surface-accent: rgba(212, 147, 13, 0.12);
-      --surface-accent-border: rgba(212, 147, 13, 0.28);
+      --p-amber-55:  #d4930d;
+      --p-amber-62:  #e5a41e;
+      --p-amber-20:  rgba(212,147,13,0.12);
+      --p-amber-28:  rgba(212,147,13,0.26);
+      --p-amber-40:  rgba(212,147,13,0.40);
+      --p-neutral-12: #111113;
+      --p-neutral-16: #16161a;
+      --p-neutral-20: #1e1e24;
+      --p-neutral-24: #242430;
+      --p-neutral-30: #2e2e3a;
+      --p-neutral-38: #38383f;
+      --p-neutral-58: #58586a;
+      --p-neutral-74: #74748a;
+      --p-neutral-92: #e4e4f0;
+
+      --bg:           var(--p-neutral-12);
+      --card:         var(--p-neutral-16);
+      --card-border:  var(--p-neutral-30);
+      --text:         var(--p-neutral-92);
+      --text-muted:   var(--p-neutral-74);
+      --text-subtle:  var(--p-neutral-58);
+      --primary:      var(--p-amber-55);
+      --primary-h:    var(--p-amber-62);
+      --primary-fg:   #100f0d;
+      --sa:           var(--p-amber-20);
+      --sab:          var(--p-amber-28);
+
+      --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px;
+      --sp-4: 16px; --sp-5: 20px; --sp-6: 24px;
+      --sp-8: 32px; --sp-10: 40px; --sp-14: 56px;
+      --sp-18: 72px;
+
+      --r-sm: 10px; --r-md: 16px; --r-lg: 24px;
+      --r-xl: 32px; --r-full: 9999px;
+
+      --shadow-card:
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 4px 8px rgba(0,0,0,.25),
+        0 20px 50px rgba(0,0,0,.45);
+      --shadow-btn: 0 4px 16px rgba(212,147,13,.30);
+      --shadow-slot: 0 2px 8px rgba(0,0,0,.22);
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 1200px 700px at 50% -120px, rgba(212,147,13,.09) 0%, transparent 65%),
+        radial-gradient(ellipse 800px 500px at 85% 105%,  rgba(90,70,210,.05) 0%, transparent 60%);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: var(--sp-10) var(--sp-6);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-optical-sizing: auto;
+      -webkit-font-smoothing: antialiased;
     }
-    .container {
+
+    /* ── Layout ─────────────────────────────────────────────────────── */
+    .page {
       width: 100%;
-      max-width: 460px;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
     }
+
+    /* ── Card (main shell) ───────────────────────────────────────────── */
     .card {
       background-color: var(--card);
+      background-image: linear-gradient(145deg, rgba(255,255,255,.03) 0%, transparent 50%);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 28px 24px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      border-radius: var(--r-xl);
+      padding: var(--sp-14) var(--sp-14);
+      box-shadow: var(--shadow-card);
+      animation: fadeUp .42s cubic-bezier(.22,.68,0,1.1) both;
     }
+
+    /* ── Badge ───────────────────────────────────────────────────────── */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: var(--surface-accent);
-      border: 1px solid var(--surface-accent-border);
+      background: var(--sa);
+      border: 1px solid var(--sab);
       color: var(--primary);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .7px; text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: var(--r-full);
+      margin-bottom: var(--sp-5);
     }
+    .badge svg { width: 12px; height: 12px; }
+
+    /* ── Typography ──────────────────────────────────────────────────── */
     h1 {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: clamp(32px, 4.5vw, 52px);
+      font-weight: 800;
+      font-variation-settings: 'opsz' 40;
+      letter-spacing: -1.2px;
+      line-height: 1.1;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: var(--sp-3);
     }
+
+    h1 .accent { color: var(--primary); }
+
     p.subtitle {
       color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 24px;
+      font-size: clamp(15px, 1.8vw, 18px);
+      line-height: 1.6;
+      max-width: 540px;
+      font-weight: 400;
     }
-    .slots-container {
+
+    /* ── Hero layout (home state) ────────────────────────────────────── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-14);
+      align-items: start;
+    }
+
+    .hero-left { display: flex; flex-direction: column; }
+
+    .hero-left .subtitle { margin-bottom: var(--sp-8); }
+
+    .hero-right {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 24px;
-      max-height: 320px;
-      overflow-y: auto;
-      padding-right: 4px;
+      gap: var(--sp-3);
     }
-    .slots-container::-webkit-scrollbar {
-      width: 6px;
+
+    /* ── Features grid ───────────────────────────────────────────────── */
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-2);
+      margin-top: var(--sp-8);
     }
-    .slots-container::-webkit-scrollbar-thumb {
-      background: #333;
-      border-radius: 4px;
-    }
-    .slot-row {
+
+    .feature-pill {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      background: #171717;
-      border: 1px solid #282828;
-      border-radius: 12px;
-      padding: 12px 14px;
-    }
-    .slot-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-    }
-    .slot-time {
+      gap: var(--sp-2);
+      background: var(--p-neutral-20);
+      border: 1px solid var(--p-neutral-30);
+      border-radius: var(--r-md);
+      padding: 12px 16px;
       font-size: 13px;
       font-weight: 500;
-      color: var(--primary);
-      background: var(--surface-accent);
-      padding: 4px 10px;
-      border-radius: 8px;
+      color: var(--text-muted);
+      transition: border-color .15s, background .15s;
     }
-    .btn-group {
+    .feature-pill:hover {
+      background: var(--p-neutral-24);
+      border-color: var(--p-neutral-38);
+    }
+    .feature-pill svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--primary); }
+
+    /* ── Divider ─────────────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--p-neutral-30) 20%, var(--p-neutral-30) 80%, transparent);
+      margin: var(--sp-10) 0;
+    }
+
+    /* ── Slots grid (profile state) ──────────────────────────────────── */
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: var(--sp-14);
+      align-items: start;
+    }
+
+    .profile-meta { display: flex; flex-direction: column; }
+    .profile-meta .subtitle { margin-bottom: 0; }
+
+    .slots-wrap { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-2);
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: var(--sp-1);
+      scrollbar-width: thin;
+      scrollbar-color: var(--p-neutral-30) transparent;
+    }
+    .slots-grid::-webkit-scrollbar { width: 5px; }
+    .slots-grid::-webkit-scrollbar-thumb { background: var(--p-neutral-30); border-radius: 4px; }
+
+    .slot-card {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
+      background: var(--p-neutral-20);
+      border: 1px solid var(--p-neutral-30);
+      border-radius: var(--r-md);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-slot);
+      animation: slideIn .32s cubic-bezier(.22,.68,0,1.1) both;
     }
+    .slot-card:nth-child(1)  { animation-delay: .04s }
+    .slot-card:nth-child(2)  { animation-delay: .08s }
+    .slot-card:nth-child(3)  { animation-delay: .12s }
+    .slot-card:nth-child(4)  { animation-delay: .16s }
+    .slot-card:nth-child(5)  { animation-delay: .20s }
+    .slot-card:nth-child(6)  { animation-delay: .24s }
+    .slot-card:nth-child(7)  { animation-delay: .28s }
+    .slot-card:nth-child(8)  { animation-delay: .32s }
+    .slot-card:nth-child(9)  { animation-delay: .36s }
+    .slot-card:nth-child(10) { animation-delay: .40s }
+
+    .slot-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+    .slot-time {
+      font-size: 15px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--primary);
+    }
+
+    /* ── Buttons ─────────────────────────────────────────────────────── */
+    .btn-group { display: flex; flex-direction: column; gap: var(--sp-2); }
+
     .btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 14px 16px;
-      border-radius: 12px;
+      gap: var(--sp-2);
+      padding: 15px var(--sp-6);
+      border-radius: var(--r-md);
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 650;
+      font-family: inherit;
       text-decoration: none;
       cursor: pointer;
       border: none;
-      transition: all 0.15s ease;
+      transition: background .13s, box-shadow .13s, transform .1s;
       text-align: center;
+      -webkit-tap-highlight-color: transparent;
     }
+    .btn:active { transform: scale(0.982); }
+    .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
     .btn-primary {
       background: var(--primary);
       color: var(--primary-fg);
+      box-shadow: var(--shadow-btn);
     }
     .btn-primary:hover {
-      background: var(--primary-hover);
+      background: var(--primary-h);
+      box-shadow: 0 6px 24px rgba(212,147,13,.45);
     }
+
     .btn-secondary {
-      background: #252525;
-      color: #fff;
-      border: 1px solid #363636;
+      background: var(--p-neutral-20);
+      color: var(--text);
+      border: 1px solid var(--p-neutral-30);
     }
     .btn-secondary:hover {
-      background: #303030;
+      background: var(--p-neutral-24);
+      border-color: var(--p-neutral-38);
     }
-    .btn-text {
+
+    .btn-ghost {
       background: transparent;
-      color: var(--text-muted);
+      color: var(--text-subtle);
       font-size: 13px;
-      padding: 8px;
+      font-weight: 500;
+      padding: var(--sp-2) var(--sp-3);
     }
-    .btn-text:hover {
-      color: #fff;
-    }
-    .tip-box {
-      margin-top: 18px;
-      padding: 12px;
-      background: #181818;
-      border: 1px solid #282828;
-      border-radius: 10px;
-      font-size: 12px;
-      color: #888;
+    .btn-ghost:hover { color: var(--text-muted); }
+
+    /* ── In-App Browser Banner ────────────────────────────────────────── */
+    .in-app-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-2);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      font-size: 12.5px;
       line-height: 1.5;
+      color: #fcd34d;
+      margin-bottom: var(--sp-4);
     }
-    .tip-box strong {
-      color: #bbb;
+    .in-app-banner svg { width: 16px; height: 16px; flex-shrink: 0; color: #f59e0b; margin-top: 2px; }
+    .in-app-banner strong { color: #fff; }
+
+    /* ── Tip box ─────────────────────────────────────────────────────── */
+    .tip-box {
+      padding: 14px 16px;
+      background: var(--p-neutral-20);
+      border: 1px solid var(--p-neutral-30);
+      border-radius: var(--r-md);
+      font-size: 12.5px;
+      color: var(--text-subtle);
+      line-height: 1.6;
+      display: flex;
+      gap: var(--sp-2);
+      align-items: flex-start;
     }
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      background: #222;
-      border: 1px solid #444;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 13px;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.25s ease;
-      pointer-events: none;
-      z-index: 100;
+    .tip-box svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
+    .tip-box strong { color: var(--text-muted); }
+    .tip-box code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: rgba(255,255,255,.07);
+      padding: 1px 5px; border-radius: 4px; font-size: 11px;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+
+    /* ── Footer ──────────────────────────────────────────────────────── */
     .footer {
       text-align: center;
-      margin-top: 18px;
       font-size: 12px;
-      color: #555;
+      font-weight: 500;
+      letter-spacing: .3px;
+      color: var(--text-subtle);
+      padding: var(--sp-1) 0;
+    }
+
+    /* ── Toast ───────────────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: var(--sp-6);
+      left: 50%;
+      transform: translateX(-50%) translateY(14px);
+      background: var(--p-neutral-24);
+      border: 1px solid var(--p-neutral-38);
+      color: var(--text);
+      padding: 11px 22px;
+      border-radius: var(--r-full);
+      font-size: 13px; font-weight: 500;
+      opacity: 0;
+      transition: opacity .22s ease, transform .22s cubic-bezier(.22,.68,0,1.1);
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Spinner ─────────────────────────────────────────────────────── */
+    .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--p-neutral-30);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin-bottom: var(--sp-5);
+    }
+
+    /* ── Animations ──────────────────────────────────────────────────── */
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:none } }
+    @keyframes slideIn { from { opacity:0; transform:translateY(8px)  } to { opacity:1; transform:none } }
+    @keyframes spin    { to { transform:rotate(360deg) } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card, .slot-card { animation: none !important; }
+      .btn, .toast, .feature-pill { transition: none !important; }
+    }
+
+    /* ── Responsive ──────────────────────────────────────────────────── */
+    @media (max-width: 720px) {
+      .card { padding: var(--sp-8) var(--sp-6); }
+      .hero, .profile-layout {
+        grid-template-columns: 1fr;
+        gap: var(--sp-8);
+      }
+      .slots-grid { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 28px; }
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: var(--sp-6) var(--sp-4); border-radius: var(--r-lg); }
+      .slots-grid { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      h1 { font-size: 24px; letter-spacing: -.5px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="page">
     <div class="card" id="mainCard">
+
+      <!-- ── Loading ──────────────────────────────────────────────────── -->
       <div id="loadingState">
-        <div class="badge">Jadwal Profile</div>
-        <h1>Opening Jadwal...</h1>
-        <p class="subtitle">Looking for timing profile...</p>
+        <div class="spinner"></div>
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Jadwal Profile
+        </div>
+        <h1>Opening Jadwal…</h1>
+        <p class="subtitle">Looking for your timing profile.</p>
       </div>
 
-      <div id="profileState" style="display: none;">
-        <div class="badge">📅 Timing Profile</div>
-        <h1 id="profileName">Schedule</h1>
-        <p class="subtitle" id="profileCount">0 periods loaded</p>
+      <!-- ── Profile ──────────────────────────────────────────────────── -->
+      <div id="profileState" style="display:none;">
+        <div class="profile-layout">
+          <div class="profile-meta">
+            <div class="in-app-banner" id="inAppNotice" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div>
+                <strong>Opening in WhatsApp / Telegram?</strong><br>
+                In-app browsers block opening other apps. Tap <strong>⋮</strong> (top-right) &amp; choose <strong>"Open in Chrome"</strong>, or use <strong>"Copy Code &amp; Open"</strong> below.
+              </div>
+            </div>
 
-        <div class="slots-container" id="slotsList"></div>
+            <div class="badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Timing Profile
+            </div>
+            <h1 id="profileName">Schedule</h1>
+            <p class="subtitle" id="profileCount">0 periods loaded</p>
 
-        <div class="btn-group">
-          <!-- Direct custom scheme anchor tag -->
-          <a class="btn btn-primary" id="openDirectBtn" href="#">Open in Jadwal App</a>
-          <!-- Intent URI button for Chrome on Android -->
-          <a class="btn btn-secondary" id="openIntentBtn" href="#" style="font-size: 14px;">Launch via Android Intent</a>
-          <button class="btn btn-secondary" id="copyCodeBtn" type="button">Copy Import Code</button>
-          
-          <a class="btn btn-text" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
-            Don't have Jadwal? Download APK
-          </a>
-        </div>
+            <div class="divider"></div>
 
-        <div class="tip-box">
-          💡 <strong>Tip for automatic one-tap open:</strong> In Android <strong>Settings > Apps > Jadwal > Open by default > Add links</strong>, enable <code>dariokisumo.github.io</code> so shared links open Jadwal directly!
+            <div class="btn-group">
+              <a class="btn btn-primary" id="openDirectBtn" href="#">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Open in Jadwal App
+              </a>
+              <button class="btn btn-secondary" id="copyCodeBtn" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Code &amp; Open Jadwal
+              </button>
+              <div style="text-align: center; margin-top: 4px;">
+                <a id="altSchemeLink" href="#" style="font-size: 12px; color: var(--text-subtle); text-decoration: underline;">
+                  Having trouble? Try direct custom link
+                </a>
+              </div>
+              <a class="btn btn-ghost" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
+                Don't have Jadwal? Download APK
+              </a>
+            </div>
+
+            <div class="tip-box" style="margin-top:var(--sp-5);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span><strong>One-tap open:</strong> In Android <strong>Settings → Apps → Jadwal → Open by default → Add links</strong>, enable <code>dariokisumo.github.io</code> so links open Jadwal directly!</span>
+            </div>
+          </div>
+
+          <div class="slots-wrap">
+            <div class="slots-grid" id="slotsList"></div>
+          </div>
         </div>
       </div>
 
-      <div id="homeState" style="display: none;">
-        <div class="badge">⚡ Jadwal</div>
-        <h1>Jadwal Timetable</h1>
-        <p class="subtitle">Offline timetable tracker with live period status, home widget, and automatic local notifications.</p>
+      <!-- ── Home ─────────────────────────────────────────────────────── -->
+      <div id="homeState" style="display:none;">
+        <div class="hero">
+          <div class="hero-left">
+            <div class="badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Jadwal
+            </div>
+            <h1>Your Timetable,<br><span class="accent">Always On Time</span></h1>
+            <p class="subtitle">Offline timetable tracker with live period status, home widget, and automatic local notifications for Android.</p>
 
-        <div class="btn-group">
-          <a class="btn btn-primary" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
-            Download Latest APK
-          </a>
-          <a class="btn btn-secondary" href="https://github.com/Dariokisumo/Jadwal" target="_blank" rel="noopener">
-            View on GitHub
-          </a>
+            <div class="features">
+              <div class="feature-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                Live Period Status
+              </div>
+              <div class="feature-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Home Widget
+              </div>
+              <div class="feature-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                Auto Notifications
+              </div>
+              <div class="feature-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6s4-2 11-2 11 2 11 2"/><path d="M1 12s4-2 11-2 11 2 11 2"/><path d="M1 18s4-2 11-2 11 2 11 2"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                100% Offline
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-right">
+            <a class="btn btn-primary" href="https://github.com/Dariokisumo/Jadwal/releases/latest" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Latest APK
+            </a>
+            <a class="btn btn-secondary" href="https://github.com/Dariokisumo/Jadwal" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              View on GitHub
+            </a>
+          </div>
         </div>
       </div>
+
     </div>
-    <div class="footer">Jadwal • Offline Timetable Tracker</div>
+    <div class="footer">Jadwal &nbsp;·&nbsp; Offline Timetable Tracker</div>
   </div>
 
-  <div class="toast" id="toast">Copied to clipboard!</div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    function base64UrlToUint8Array(base64Url) {
-      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      while (base64.length % 4 !== 0) base64 += '=';
-      const binary = atob(base64);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
+    function base64UrlToUint8Array(b) {
+      let s=b.replace(/-/g,'+').replace(/_/g,'/');
+      while(s.length%4) s+='=';
+      const bin=atob(s),bytes=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
       return bytes;
     }
-
-    function formatMinutes(totalMin) {
-      let h = Math.floor(totalMin / 60) % 24;
-      const m = totalMin % 60;
-      const period = h >= 12 ? 'PM' : 'AM';
-      let hour12 = h % 12;
-      if (hour12 === 0) hour12 = 12;
-      const mStr = m.toString().padStart(2, '0');
-      return `${hour12}:${mStr} ${period}`;
+    function fmt(m) {
+      const h=Math.floor(m/60)%24,min=m%60;
+      return `${h%12||12}:${String(min).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
     }
-
-    function parsePayload(raw) {
-      let bytes;
-      try {
-        bytes = base64UrlToUint8Array(raw);
-      } catch (e) {
-        return null;
-      }
-
-      // Check compact binary minute-format: 'J', 'P', 0x01
-      if (bytes.length >= 5 && bytes[0] === 0x4A && bytes[1] === 0x50 && bytes[2] === 0x01) {
-        let offset = 3;
-        const nameLen = bytes[offset++];
-        const nameBytes = bytes.slice(offset, offset + nameLen);
-        const name = new TextDecoder().decode(nameBytes);
-        offset += nameLen;
-        const slotCount = bytes[offset++];
-        const slots = [];
-        for (let i = 0; i < slotCount; i++) {
-          const pNum = bytes[offset++];
-          const startMin = (bytes[offset++] << 8) | bytes[offset++];
-          const endMin = (bytes[offset++] << 8) | bytes[offset++];
-          slots.push({
-            period: pNum,
-            start: formatMinutes(startMin),
-            end: formatMinutes(endMin)
-          });
+    function parse(raw) {
+      let b;
+      try{b=base64UrlToUint8Array(raw);}catch{return null;}
+      if(b.length>=5&&b[0]===0x4A&&b[1]===0x50&&b[2]===0x01){
+        let o=3;
+        const nLen=b[o++],name=new TextDecoder().decode(b.slice(o,o+nLen));
+        o+=nLen;const cnt=b[o++],slots=[];
+        for(let i=0;i<cnt;i++){
+          const p=b[o++],s=(b[o++]<<8)|b[o++],e=(b[o++]<<8)|b[o++];
+          slots.push({period:p,start:fmt(s),end:fmt(e)});
         }
-        return { name: name || 'Schedule', slots };
+        return{name:name||'Schedule',slots};
       }
-
-      // Fallback: UTF-8 JSON
-      try {
-        const text = new TextDecoder().decode(bytes);
-        const json = JSON.parse(text);
-        const slots = [];
-        if (json.slots) {
-          for (const [p, t] of Object.entries(json.slots)) {
-            slots.push({ period: parseInt(p), start: t[0], end: t[1] });
-          }
-        }
-        return { name: json.name || 'Schedule', slots };
-      } catch (e) {
-        return null;
-      }
+      try{
+        const j=JSON.parse(new TextDecoder().decode(b));
+        return{name:j.name||'Schedule',
+          slots:j.slots?Object.entries(j.slots).map(([p,t])=>({period:+p,start:t[0],end:t[1]})):[]}
+      }catch{return null;}
     }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+    function toast(msg){
+      const t=document.getElementById('toast');
+      t.textContent=msg;t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),2200);
     }
-
-    function getRawPayload() {
-      // 1. Check URL hash: #SlAB... or #p/SlAB... or #p#SlAB...
-      if (window.location.hash) {
-        let h = window.location.hash.substring(1);
-        if (h.startsWith('p/')) h = h.substring(2);
-        if (h.startsWith('/p/')) h = h.substring(3);
-        if (h.startsWith('p#')) h = h.substring(2);
-        if (h.startsWith('#')) h = h.substring(1);
-        if (h) return h;
+    function getPayload(){
+      if(window.location.hash){
+        let h=window.location.hash.slice(1);
+        if(h.startsWith('/p/'))h=h.slice(3);
+        else if(h.startsWith('p/'))h=h.slice(2);
+        else if(h.startsWith('p#'))h=h.slice(2);
+        else if(h.startsWith('#'))h=h.slice(1);
+        if(h)return h;
       }
-      // 2. Check query params: ?data=...
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('data')) {
-        return urlParams.get('data');
-      }
-      // 3. Check path segments: /p/<payload>
-      const pathParts = window.location.pathname.split('/').filter(Boolean);
-      if (pathParts.length >= 2 && pathParts[0] === 'p') {
-        return pathParts[1];
-      }
+      const p=new URLSearchParams(window.location.search);
+      if(p.has('data'))return p.get('data');
+      const parts=window.location.pathname.split('/').filter(Boolean);
+      if(parts.length>=2&&parts[0]==='p')return parts[1];
       return null;
     }
+    function show(id){document.getElementById(id).style.display='block';}
+    function hide(id){document.getElementById(id).style.display='none';}
 
-    function init() {
-      const payload = getRawPayload();
+    function init(){
+      const raw=getPayload();
+      if(!raw){hide('loadingState');show('homeState');return;}
+      const p=parse(raw);
+      if(!p||!p.slots?.length){hide('loadingState');show('homeState');return;}
 
-      if (!payload) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('homeState').style.display = 'block';
-        return;
-      }
+      document.getElementById('profileName').textContent=p.name;
+      document.getElementById('profileCount').textContent=
+        `${p.slots.length} period${p.slots.length!==1?'s':''} loaded`;
 
-      const profile = parsePayload(payload);
-      if (!profile || !profile.slots || profile.slots.length === 0) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('homeState').style.display = 'block';
-        return;
-      }
-
-      // Render profile
-      document.getElementById('profileName').textContent = profile.name;
-      document.getElementById('profileCount').textContent = `${profile.slots.length} periods loaded`;
-
-      const list = document.getElementById('slotsList');
-      list.innerHTML = '';
-      profile.slots.sort((a, b) => a.period - b.period);
-      for (const slot of profile.slots) {
-        const row = document.createElement('div');
-        row.className = 'slot-row';
-        row.innerHTML = `
-          <span class="slot-title">Period ${slot.period}</span>
-          <span class="slot-time">${slot.start} – ${slot.end}</span>
-        `;
-        list.appendChild(row);
-      }
-
-      document.getElementById('loadingState').style.display = 'none';
-      document.getElementById('profileState').style.display = 'block';
-
-      // Setup URL schemes
-      const encodedPayload = encodeURIComponent(payload);
-      const customSchemeUrl = `jadwal://profile?data=${encodedPayload}`;
-      const fallbackUrl = encodeURIComponent('https://github.com/Dariokisumo/Jadwal/releases/latest');
-      const intentUrl = `intent://profile/?data=${encodedPayload}#Intent;scheme=jadwal;package=com.example.jadwal;S.browser_fallback_url=${fallbackUrl};end`;
-
-      // 1. Direct App Link button
-      const openDirectBtn = document.getElementById('openDirectBtn');
-      openDirectBtn.href = customSchemeUrl;
-      openDirectBtn.addEventListener('click', () => {
-        window.location.href = customSchemeUrl;
+      const list=document.getElementById('slotsList');
+      list.innerHTML='';
+      p.slots.sort((a,b)=>a.period-b.period).forEach(s=>{
+        const c=document.createElement('div');
+        c.className='slot-card';
+        c.innerHTML=`<span class="slot-label">Period ${s.period}</span><span class="slot-time">${s.start} – ${s.end}</span>`;
+        list.appendChild(c);
       });
 
-      // 2. Intent Launch button
-      const openIntentBtn = document.getElementById('openIntentBtn');
-      openIntentBtn.href = intentUrl;
+      hide('loadingState');show('profileState');
 
-      // 3. Copy Code button
-      document.getElementById('copyCodeBtn').addEventListener('click', () => {
-        navigator.clipboard.writeText(`JADWAL_PROFILE:${payload}`).then(() => {
-          showToast('Import code copied!');
-        }).catch(() => {
-          showToast('Failed to copy');
+      const isAndroid=/Android/i.test(navigator.userAgent);
+      const isInApp=/WhatsApp|Telegram|FBAN|FBAV|Instagram|Line|Twitter|Snapchat/i.test(navigator.userAgent);
+      if(isInApp){
+        const n=document.getElementById('inAppNotice');
+        if(n)n.style.display='flex';
+      }
+
+      const enc=encodeURIComponent(raw);
+      const cu=`jadwal://profile?data=${enc}`;
+      const fb=encodeURIComponent('https://github.com/Dariokisumo/Jadwal/releases/latest');
+      const iu=`intent://profile?data=${enc}#Intent;scheme=jadwal;package=com.example.jadwal;component=com.example.jadwal/.MainActivity;S.data=${enc};S.browser_fallback_url=${fb};end`;
+
+      const db=document.getElementById('openDirectBtn');
+      if(db)db.href=isAndroid?iu:cu;
+
+      const altLink=document.getElementById('altSchemeLink');
+      if(altLink)altLink.href=cu;
+
+      const copyBtn=document.getElementById('copyCodeBtn');
+      if(copyBtn){
+        copyBtn.addEventListener('click',()=>{
+          navigator.clipboard.writeText(`JADWAL_PROFILE:${raw}`)
+            .then(()=>{
+              toast('Code copied! Opening Jadwal...');
+              setTimeout(()=>{window.location.href=isAndroid?iu:cu;},400);
+            })
+            .catch(()=>toast('Failed to copy code'));
         });
-      });
+      }
     }
-
     init();
   </script>
 </body>
