@@ -831,6 +831,104 @@
       font-size: 11px;
     }
 
+    /* APK Installation Guide */
+    .install-guide {
+      margin-top: var(--s-4);
+      background: var(--p-srf-0);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      font-size: 12px;
+      color: var(--text-dim);
+      overflow: hidden;
+      transition: border-color var(--t-fast);
+      text-align: left;
+    }
+    .install-guide[open] {
+      border-color: var(--border-2);
+    }
+    .install-guide-summary {
+      padding: var(--s-3) var(--s-4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .install-guide-summary::-webkit-details-marker {
+      display: none;
+    }
+    .install-guide-summary svg:first-child {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      color: var(--action);
+    }
+    .install-guide-summary span {
+      flex: 1;
+    }
+    .install-guide-summary strong {
+      color: var(--p-text-0);
+    }
+    .install-guide-chevron {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      color: var(--text-dim);
+      transition: transform var(--t-fast);
+    }
+    .install-guide[open] .install-guide-chevron {
+      transform: rotate(180deg);
+    }
+    .install-guide-steps {
+      padding: 0 var(--s-4) var(--s-4);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: var(--s-3);
+    }
+    .install-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .install-step-num {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--action-subtle);
+      color: var(--action);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .install-step-text {
+      flex: 1;
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+    .install-step-text strong {
+      display: block;
+      color: var(--p-text-0);
+      font-size: 12px;
+      margin-bottom: 1px;
+    }
+    .install-step-text p {
+      margin: 0;
+      color: var(--text-dim);
+    }
+    .install-step-text em {
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
     /* ══════════════════════════════════════════════════════
        LOADING STATE
        ══════════════════════════════════════════════════════ */
@@ -1108,7 +1206,7 @@
               Having trouble? Try direct custom link
             </a>
           </div>
-          <a class="glass-btn glass-regular apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk" style="height: 44px; font-size: 13px; margin-top: 4px;">
+          <a id="profileDirectApkBtn" class="glass-btn glass-regular apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-v2.10.4-63-release.apk" style="height: 44px; font-size: 13px; margin-top: 4px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             <span>Don't have Jadwal? Direct Download APK</span>
           </a>
@@ -1161,24 +1259,24 @@
             </div>
           </div>
 
-          <div class="glass-effect-container" role="group" aria-label="Download and project links">
-            <!-- 64-bit ARM APK (Prominent Liquid Glass) -->
-            <a class="glass-btn glass-prominent apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk" title="Download Jadwal for 64-bit Android (Recommended)">
+          <div class="glass-effect-container" id="heroDownloadContainer" role="group" aria-label="Download and project links">
+            <!-- 64-bit ARM APK (Prominent Liquid Glass by default) -->
+            <a id="heroBtn64" class="glass-btn glass-prominent apk-download-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-v2.10.4-63-release.apk" title="Download Jadwal for 64-bit Android (Recommended)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/>
                 <line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
               <span>Download APK</span>
-              <span class="glass-badge glass-badge-prominent">
+              <span id="heroBadge64" class="glass-badge glass-badge-prominent">
                 <span class="glass-badge-dot" aria-hidden="true"></span>
                 arm64
               </span>
             </a>
 
-            <div class="glass-row-secondary">
-              <!-- 32-bit ARM APK (Regular Liquid Glass) -->
-              <a class="glass-btn glass-regular apk-download-32-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm32.apk" title="Download Jadwal for older 32-bit Android devices">
+            <div class="glass-row-secondary" id="heroSecondaryRow">
+              <!-- 32-bit ARM APK (Regular Liquid Glass by default) -->
+              <a id="heroBtn32" class="glass-btn glass-regular apk-download-32-btn" href="https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-v2.10.4-63-arm32-release.apk" title="Download Jadwal for older 32-bit Android devices">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <rect x="4" y="4" width="16" height="16" rx="2"/>
                   <rect x="9" y="9" width="6" height="6"/>
@@ -1192,7 +1290,7 @@
                   <line x1="1" y1="14" x2="4" y2="14"/>
                 </svg>
                 <span>32-bit</span>
-                <span class="glass-badge glass-badge-regular">v7a</span>
+                <span id="heroBadge32" class="glass-badge glass-badge-regular">v7a</span>
               </a>
 
               <!-- GitHub (Regular Liquid Glass) -->
@@ -1208,6 +1306,38 @@
               </a>
             </div>
           </div>
+
+          <!-- Android APK Installation Quick Guide -->
+          <details class="install-guide" id="installGuide">
+            <summary class="install-guide-summary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>First time installing an APK? <strong>Quick 3-step guide</strong></span>
+              <svg class="install-guide-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="install-guide-steps">
+              <div class="install-step">
+                <span class="install-step-num">1</span>
+                <div class="install-step-text">
+                  <strong>Download APK</strong>
+                  <p>Tap Download above (arm64 is pre-selected for your device). If your browser warns <em>"File might be harmful"</em>, tap <strong>Download anyway</strong>.</p>
+                </div>
+              </div>
+              <div class="install-step">
+                <span class="install-step-num">2</span>
+                <div class="install-step-text">
+                  <strong>Allow Installation</strong>
+                  <p>Open the downloaded file. If Android prompts <em>"Install unknown apps"</em>, tap <strong>Settings</strong> and turn ON <strong>Allow from this source</strong>.</p>
+                </div>
+              </div>
+              <div class="install-step">
+                <span class="install-step-num">3</span>
+                <div class="install-step-text">
+                  <strong>Install &amp; Launch</strong>
+                  <p>Tap <strong>Install</strong>. Jadwal is 100% offline, requires zero sign-up, and preserves all timetable data across updates.</p>
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
 
         <div class="hero-visual">
@@ -1325,7 +1455,154 @@
       return null;
     }
 
+    const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    const CHIP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>';
+
+    async function detectArchitecture() {
+      const ua = navigator.userAgent || '';
+      const isAndroid = /Android/i.test(ua);
+
+      // 1. User-Agent Client Hints API (Chrome, Edge, Samsung Internet, Android WebView)
+      if (navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {
+        try {
+          const hints = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness']);
+          if (hints.bitness === '32') return { arch: '32', isAndroid };
+          if (hints.bitness === '64') return { arch: '64', isAndroid };
+        } catch (_) {}
+      }
+
+      // 2. Legacy platform / User-Agent token checks
+      const plat = (navigator.platform || '').toLowerCase();
+      const uaLower = ua.toLowerCase();
+      if (
+        plat.includes('armv7') ||
+        plat.includes('armv6') ||
+        uaLower.includes('armv7l') ||
+        uaLower.includes('armv6l') ||
+        uaLower.includes('armeabi')
+      ) {
+        return { arch: '32', isAndroid };
+      }
+
+      if (
+        plat.includes('aarch64') ||
+        plat.includes('armv8') ||
+        uaLower.includes('aarch64') ||
+        uaLower.includes('arm64')
+      ) {
+        return { arch: '64', isAndroid };
+      }
+
+      // 3. WebGL GPU renderer inspection (heuristic for older 32-bit chipsets)
+      try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (gl) {
+          const ext = gl.getExtension('WEBGL_debug_renderer_info');
+          if (ext) {
+            const renderer = gl.getParameter(ext.UNMASKED_RENDERER_WEBGL).toLowerCase();
+            if (/mali-(400|450)|adreno\s*(2\d\d|305|306|308|320|330)/i.test(renderer)) {
+              return { arch: '32', isAndroid };
+            }
+          }
+        }
+      } catch (_) {}
+
+      return { arch: '64', isAndroid };
+    }
+
+    let downloadUrl64 = 'https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-v2.10.4-63-release.apk';
+    let downloadUrl32 = 'https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-v2.10.4-63-arm32-release.apk';
+
+    function syncDownloadUrls(url64, url32) {
+      if (url64) {
+        downloadUrl64 = url64;
+        const b64 = document.getElementById('heroBtn64');
+        if (b64) b64.href = url64;
+        const pBtn = document.getElementById('profileDirectApkBtn');
+        if (pBtn && pBtn.dataset.arch !== '32') pBtn.href = url64;
+      }
+      if (url32) {
+        downloadUrl32 = url32;
+        const b32 = document.getElementById('heroBtn32');
+        if (b32) b32.href = url32;
+        const pBtn = document.getElementById('profileDirectApkBtn');
+        if (pBtn && pBtn.dataset.arch === '32') pBtn.href = url32;
+      }
+    }
+
+    // Auto-discover newest release assets dynamically from GitHub API
+    fetch('https://api.github.com/repos/Dariokisumo/Jadwal/releases/latest')
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !Array.isArray(data.assets)) return;
+        const apk64 = data.assets.find(a => !a.name.includes('arm32') && a.name.endsWith('.apk'));
+        const apk32 = data.assets.find(a => a.name.includes('arm32') && a.name.endsWith('.apk'));
+        syncDownloadUrls(apk64?.browser_download_url, apk32?.browser_download_url);
+      })
+      .catch(() => {});
+
+    function setupArchitectureHighlight(info) {
+      const { arch, isAndroid } = info;
+      const btn64 = document.getElementById('heroBtn64');
+      const btn32 = document.getElementById('heroBtn32');
+      const container = document.getElementById('heroDownloadContainer');
+      const secRow = document.getElementById('heroSecondaryRow');
+      const profileApk = document.getElementById('profileDirectApkBtn');
+
+      if (!btn64 || !btn32 || !container || !secRow) return;
+
+      if (arch === '32') {
+        // Swap highlight to 32-bit button (Liquid Glass Prominent)
+        btn32.className = 'glass-btn glass-prominent apk-download-32-btn';
+        btn32.title = 'Download Jadwal for 32-bit Android (Detected for your device)';
+        btn32.innerHTML = `${DOWNLOAD_ICON}<span>Download APK</span><span id="heroBadge32" class="glass-badge glass-badge-prominent"><span class="glass-badge-dot" aria-hidden="true"></span>${isAndroid ? 'arm32 · Detected' : 'arm32'}</span>`;
+
+        // Demote 64-bit button to regular secondary
+        btn64.className = 'glass-btn glass-regular apk-download-btn';
+        btn64.title = 'Download Jadwal for 64-bit Android devices';
+        btn64.innerHTML = `${CHIP_ICON}<span>64-bit</span><span id="heroBadge64" class="glass-badge glass-badge-regular">arm64</span>`;
+
+        // Reorder: place 32-bit as prominent first child, 64-bit in secondary row
+        container.insertBefore(btn32, secRow);
+        secRow.insertBefore(btn64, secRow.firstChild);
+
+        if (profileApk) {
+          profileApk.dataset.arch = '32';
+          profileApk.href = downloadUrl32;
+          profileApk.title = 'Direct Download APK for 32-bit Android (Detected)';
+        }
+      } else if (isAndroid) {
+        // 64-bit confirmed on Android device
+        btn64.title = 'Download Jadwal for 64-bit Android (Detected for your device)';
+        const badge64 = document.getElementById('heroBadge64');
+        if (badge64) {
+          badge64.innerHTML = '<span class="glass-badge-dot" aria-hidden="true"></span>arm64 · Detected';
+        }
+      }
+    }
+
     function init() {
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isInApp = /WhatsApp|Telegram|FBAN|FBAV|Instagram|Line|Twitter|Snapchat/i.test(navigator.userAgent);
+
+      // Handle in-app browser click behavior globally
+      document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.apk-download-btn, .apk-download-32-btn');
+        if (btn && isInApp) {
+          e.preventDefault();
+          showToast('Opening in Chrome to download APK...');
+          const target = btn.getAttribute('href').replace(/^https?:\/\//, '');
+          window.location.href = `intent://${target}#Intent;scheme=https;package=com.android.chrome;end`;
+        }
+      });
+
+      // Detect architecture and adapt download buttons dynamically
+      const archPromise = detectArchitecture().then(info => {
+        setupArchitectureHighlight(info);
+        return info;
+      });
+
       const payload = getRawPayload();
 
       if (!payload) {
@@ -1359,8 +1636,6 @@
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('profileState').style.display = 'flex';
 
-      const isAndroid = /Android/i.test(navigator.userAgent);
-      const isInApp = /WhatsApp|Telegram|FBAN|FBAV|Instagram|Line|Twitter|Snapchat/i.test(navigator.userAgent);
       if (isInApp) {
         const n = document.getElementById('inAppNotice');
         if (n) n.style.display = 'flex';
@@ -1368,13 +1643,24 @@
 
       const enc = encodeURIComponent(payload);
       const customSchemeUrl = `jadwal://profile?data=${enc}`;
-      const fallbackUrl = encodeURIComponent('https://github.com/Dariokisumo/Jadwal/releases/latest/download/jadwal-arm64.apk');
-      const intentUrl = `intent://profile?data=${enc}#Intent;scheme=jadwal;package=com.example.jadwal;component=com.example.jadwal/.MainActivity;S.data=${enc};S.browser_fallback_url=${fallbackUrl};end`;
+      let fallbackUrl = encodeURIComponent(downloadUrl64);
+      let intentUrl = `intent://profile?data=${enc}#Intent;scheme=jadwal;package=com.example.jadwal;component=com.example.jadwal/.MainActivity;S.data=${enc};S.browser_fallback_url=${fallbackUrl};end`;
 
       const openDirectBtn = document.getElementById('openDirectBtn');
       if (openDirectBtn) {
         openDirectBtn.href = isAndroid ? intentUrl : customSchemeUrl;
       }
+
+      // If 32-bit is detected, update the fallback intent APK
+      archPromise.then(info => {
+        if (info.arch === '32') {
+          fallbackUrl = encodeURIComponent(downloadUrl32);
+          intentUrl = `intent://profile?data=${enc}#Intent;scheme=jadwal;package=com.example.jadwal;component=com.example.jadwal/.MainActivity;S.data=${enc};S.browser_fallback_url=${fallbackUrl};end`;
+          if (openDirectBtn && isAndroid) {
+            openDirectBtn.href = intentUrl;
+          }
+        }
+      });
 
       const altLink = document.getElementById('altSchemeLink');
       if (altLink) altLink.href = customSchemeUrl;
@@ -1392,18 +1678,6 @@
             .catch(() => showToast('Failed to copy code'));
         });
       }
-
-      // Handle APK download clicks in in-app browsers
-      document.querySelectorAll('.apk-download-btn, .apk-download-32-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          if (isInApp) {
-            e.preventDefault();
-            showToast('Opening in Chrome to download APK...');
-            const target = btn.getAttribute('href').replace(/^https?:\/\//, '');
-            window.location.href = `intent://${target}#Intent;scheme=https;package=com.android.chrome;end`;
-          }
-        });
-      });
     }
 
     init();
